@@ -1,0 +1,7 @@
+# https://alacritty.org/config-alacritty.html
+
+[font]
+size = 9
+
+[colors.primary]
+background = "#000000"
