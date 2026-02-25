@@ -228,10 +228,13 @@ require("lazy").setup({
       config = function()
         local lint = require("lint")
 
+        -- https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#available-linters
         lint.linters_by_ft = {
           bash = { "shellcheck" },
           sh = { "shellcheck" },
           dockerfile = { "hadolint" },
+          yaml = { 'yamllint' },
+          ["yaml.ansible"] = { 'ansible_lint' },
           -- javascript = { "eslint_d" },
           -- typescript = { "eslint_d" },
           -- ruby = { "rubocop" },
