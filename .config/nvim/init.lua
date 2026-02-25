@@ -231,6 +231,7 @@ require("lazy").setup({
         lint.linters_by_ft = {
           bash = { "shellcheck" },
           sh = { "shellcheck" },
+          dockerfile = { "hadolint" },
           -- javascript = { "eslint_d" },
           -- typescript = { "eslint_d" },
           -- ruby = { "rubocop" },
