@@ -453,6 +453,7 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
 
 -- Adds a border to diagnostic popups (the "I" info)
 vim.diagnostic.config({
+  virtual_lines = true,  -- Use virtual lines for showing diagnostic messages
   float = { border = "rounded" },
 })
 
