@@ -103,14 +103,6 @@ vim.o.foldlevelstart = 99
 -- Use <Esc> to exit terminal mode
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 
--- Map <C-j>, <C-k>, <C-h>, <C-l> to navigate between windows in any modes
--- Default nvim configuration is to use Alt key (e.g. <A-h>), but since that
--- one is already mapped and used by i3wm, changed to Control
-vim.keymap.set({ 'n' }, '<C-h>', '<C-w>h')
-vim.keymap.set({ 'n' }, '<C-j>', '<C-w>j')
-vim.keymap.set({ 'n' }, '<C-k>', '<C-w>k')
-vim.keymap.set({ 'n' }, '<C-l>', '<C-w>l')
-
 -- Exit terminal insert mode on mouse scroll
 vim.keymap.set('t', '<ScrollWheelUp>', [[<C-\><C-n><C-w>N]])
 vim.keymap.set('t', '<ScrollWheelDown>', [[<C-\><C-n><C-w>N]])
@@ -208,6 +200,7 @@ require("lazy").setup({
     -- snippets
     {
       'saghen/blink.cmp',
+      event = "InsertEnter",
       version = '*', -- Download pre-built binaries
       opts = {
         keymap = { preset = 'super-tab' },
@@ -228,18 +221,28 @@ require("lazy").setup({
       config = function()
         local lint = require("lint")
 
-        -- https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#available-linters
-        lint.linters_by_ft = {
-          bash = { "shellcheck" },
-          sh = { "shellcheck" },
-          dockerfile = { "hadolint" },
-          yaml = { 'yamllint' },
-          ["yaml.ansible"] = { 'ansible_lint' },
-          -- javascript = { "eslint_d" },
-          -- typescript = { "eslint_d" },
-          -- ruby = { "rubocop" },
-          -- python = { "flake8" },
-        }
+        -- Helper function to determine if binary exists in the system (and
+        -- avoid unwanted errors)
+        local function binary_exists(cmd)
+          local handle = io.popen("command -v " .. cmd .. " 2>/dev/null", "r")
+          return handle ~= nil
+        end
+
+        lint.linters_by_ft = {}
+
+        if binary_exists("shellcheck") then
+          lint.linters_by_ft.bash = { "shellcheck" }
+          lint.linters_by_ft.sh = { "shellcheck" }
+        end
+        if binary_exists("hadolint") then
+          lint.linters_by_ft.dockerfile = { "hadolint" }
+        end
+        if binary_exists("yamllint") then
+          lint.linters_by_ft.yaml = { 'yamllint' }
+        end
+        if binary_exists("ansible_lint") then
+          lint.linters_by_ft["yaml.ansible"] = { 'ansible_lint' }
+        end
 
         vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
           callback = function() lint.try_lint() end,
@@ -250,6 +253,7 @@ require("lazy").setup({
     -- Code navigation
     {
       "stevearc/aerial.nvim",
+      event = "BufReadPost",
       keys = {{ "<F8>", "<cmd>AerialToggle!<CR>", desc = "Outline" }},
     },
    
@@ -283,44 +287,6 @@ require("lazy").setup({
           lualine_z = {},
         }
       }
-    },
-         
-    {
-      "olimorris/codecompanion.nvim",
-      version = "^18.0.0",
-      opts = {},
-      dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-treesitter/nvim-treesitter",
-        "ravitemer/mcphub.nvim",
-      },
-      config = function()
-        require("codecompanion").setup({
-          interactions = {
-              chat = {
-                adapter = "cagent",  -- use ACP adapter cagent
-              },
-            },
-          adapters = {
-            acp = {
-              cagent = function()
-                return require("codecompanion.adapters").extend("cagent", {
-                  commands = {
-                    default = {
-                      "cagent",
-                      "acp",
-                      "writer.yaml"
-                    },
-                  },
-                  env = {
-                    OPENAI_API_KEY = "key",
-                  }
-                })
-              end,
-            },
-          },
-        })
-      end
     },
 
     {
@@ -374,7 +340,6 @@ require("lazy").setup({
   checker = { enabled = true }
 })
 
-
 -- Make the update feel faster (default is 4000ms, which is too slow)
 vim.opt.updatetime = 300
 
@@ -397,6 +362,16 @@ vim.lsp.config('*', {
 -- Activate it
 -- vim.lsp.config('docker-language-server', {})
 vim.lsp.enable('docker_language_server')
+
+-- ============================================================================
+-- Language Servers
+--
+-- To enable additional language servers, add:
+--   vim.lsp.enable('server_name')
+--
+-- Available servers list: https://github.com/neovim/nvim-lspconfig/blob/master/doc/servers.md
+-- ============================================================================
+
 -- local lspconfig = require('lspconfig')
 -- -- 1. Get the generic default config from lspconfig
 -- local lspconfig_defaults = require('lspconfig').util.default_config
