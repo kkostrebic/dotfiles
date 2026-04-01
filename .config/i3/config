@@ -33,7 +33,7 @@ new_window normal 1 px
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec --no-startup-id alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -41,7 +41,7 @@ bindsym $mod+Shift+q kill
 # start dmenu (a program launcher)
 # bindsym $mod+d exec dmenu_run
 # using rofi instead of dmenu
-bindsym $mod+d exec rofi -combi-modi window#drun#ssh#run -show combi
+bindsym $mod+d exec --no-startup-id rofi -combi-modi window#drun#ssh#run -show combi
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -52,13 +52,13 @@ bindsym $mod+d exec rofi -combi-modi window#drun#ssh#run -show combi
 # Dependencies: maim, xdotool
 #-------------------------------------------------------------------------------
 # -> Full Screen
-bindsym Print exec --no-startup-id maim --format=png "/home/$USER/Downloads/$(date +'Screenshot-%Y%m%d%H%M%S').png"
+bindsym Print exec --no-startup-id maim --format=png "/$HOME/Downloads/$(date +'Screenshot-%Y%m%d%H%M%S').png"
 
 # -> Active Window
-bindsym Mod4+Print exec --no-startup-id maim --format=png --window $(xdotool getactivewindow) "/home/$USER/Downloads/$(date +'Screenshot-%Y%m%d%H%M%S').png"
+bindsym Mod4+Print exec --no-startup-id maim --format=png --window $(xdotool getactivewindow) "/$HOME/Downloads/$(date +'Screenshot-%Y%m%d%H%M%S').png"
 
 # -> Selection
-bindsym Shift+Print exec --no-startup-id maim --format=png --select "/home/$USER/Downloads/$(date +'Screenshot-%Y%m%d%H%M%S').png"
+bindsym Shift+Print exec --no-startup-id maim --format=png --select "/$HOME/Downloads/$(date +'Screenshot-%Y%m%d%H%M%S').png"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -199,12 +199,13 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 # Set keyboard backlight brightness
 # NOTE:
 #   - Look for correct device using `$ brightnessctl --list`
+#   - In case configured device is not there this will gracefully fail (|| true)
 #   - Modificiations requires root permissions (user needs to be in input group)
 #   - `$ xmodmap -pke` - list of all key symbol and code mappings
 #   - `$ xev` - use to show key code and symbol for key pressed
 #
-bindsym XF86KbdBrightnessUp exec --no-startup-id brightnessctl --device='smc::kbd_backlight' set +10%
-bindsym XF86KbdBrightnessDown exec --no-startup-id brightnessctl --device='smc::kbd_backlight' set 10%-
+bindsym XF86KbdBrightnessUp exec --no-startup-id brightnessctl --device='smc::kbd_backlight' set +10% || true
+bindsym XF86KbdBrightnessDown exec --no-startup-id brightnessctl --device='smc::kbd_backlight' set 10%- || true
 
 # Media player controls
 # bindsym XF86AudioPlay exec playerctl play
@@ -212,7 +213,7 @@ bindsym XF86KbdBrightnessDown exec --no-startup-id brightnessctl --device='smc::
 # bindsym XF86AudioNext exec playerctl next
 # bindsym XF86AudioPrev exec playerctl previous
 
-bindsym XF86Calculator exec bc
+bindsym XF86Calculator exec --no-startup-id bc
 
 # Make the currently focused window a scratchpad
 bindsym $mod+Shift+minus move scratchpad
