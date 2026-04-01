@@ -311,8 +311,17 @@ require("lazy").setup({
     {
       "rebelot/kanagawa.nvim", 
       lazy = false,
-      -- opts ={},
-      config = function()
+      opts ={
+        colors = {
+          palette = {
+            sumiInk3 = "#000000",
+            sumiInk4 = "#0C0C0C",
+            sumiInk5 = "#131313"
+          }
+        }
+      },
+      config = function(_, opts)
+        require("kanagawa").setup(opts)
         vim.cmd("colorscheme kanagawa-wave") 
       end
     },
