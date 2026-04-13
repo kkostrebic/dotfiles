@@ -281,10 +281,11 @@ require("lazy").setup({
         sections = {
           lualine_a = {'filename'}, -- filename
           lualine_b = {},
-          lualine_c = {},
+          lualine_c = {'diff'},  -- lines modified, e.g. +1 -3 (git)
+
           lualine_x = {"'0x%B'", 'encoding', 'filetype'},  -- unicode value of the char under the cursor | file encoding
-          lualine_y = {'%l/%L:%c'}, -- current-line / total-lines : column
-          lualine_z = {},
+          lualine_y = {},
+          lualine_z = {'progress', 'location'},  -- progress in % (current line / total lines) | location = current line:current column 
         }
       }
     },
