@@ -13,11 +13,22 @@ esac
 HISTCONTROL=ignoreboth
 
 # Don't save to history some every day commands
-HISTIGNORE="l:l *:cd:cd *:ls:ls *:bg:fg:exit:pwd:clear:history"
+HISTIGNORE="*:cd:cd *:ls:ls *:bg:fg:exit:pwd:clear:history"
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=10000
 HISTFILESIZE=20000
+
+# PROMPT_COMMAND is an environment variable that holds a command to be executed
+# just before the shell displays your prompt, so in this case every time user
+# hits enter any new history lines will be saved to history files (by default
+# this happens only when you close terminal) and reloads those new history
+# lines. This is setup is handy when using tmux in order to preserve the
+# commands from each tmux pane.
+#
+# 'history -a' - writes new commands immediately to the history file
+# 'history -n' - reloads commands from the file (so other panes see them)
+PROMPT_COMMAND='history -a; history -n'
 
 # https://www.gnu.org/s/bash/manual/html_node/The-Shopt-Builtin.html
 # append to the history file, don't overwrite it
@@ -101,6 +112,10 @@ fi
 #alias la='ls -A'
 #alias l='ls -CF'
 alias l='ls -lah'
+alias grep='grep --color=auto'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
