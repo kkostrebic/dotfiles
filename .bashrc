@@ -8,27 +8,18 @@ case $- in
       *) return;;
 esac
 
+# Bash variables: https://www.gnu.org/software/bash/manual/bash.html#Bash-Variables
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
 # Don't save to history some every day commands
-HISTIGNORE="*:cd:cd *:ls:ls *:bg:fg:exit:pwd:clear:history"
+HISTIGNORE="cd*:ls*:bg:fg:exit:pwd:clear:history"
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=10000
 HISTFILESIZE=20000
-
-# PROMPT_COMMAND is an environment variable that holds a command to be executed
-# just before the shell displays your prompt, so in this case every time user
-# hits enter any new history lines will be saved to history files (by default
-# this happens only when you close terminal) and reloads those new history
-# lines. This is setup is handy when using tmux in order to preserve the
-# commands from each tmux pane.
-#
-# 'history -a' - writes new commands immediately to the history file
-# 'history -n' - reloads commands from the file (so other panes see them)
-PROMPT_COMMAND='history -a; history -n'
 
 # https://www.gnu.org/s/bash/manual/html_node/The-Shopt-Builtin.html
 # append to the history file, don't overwrite it
@@ -145,6 +136,17 @@ bind '"\e[B": history-search-forward'   # Down Arrow
 export MISE_PREFER_OFFLINE=true
 # Activate mise
 eval "$(mise activate bash)"
+
+# PROMPT_COMMAND is an environment variable that holds a command to be executed
+# just before the shell displays your prompt, so in this case every time user
+# hits enter any new history lines will be saved to history files (by default
+# this happens only when you close terminal) and reloads those new history
+# lines. This is setup is handy when using tmux in order to preserve the
+# commands from each tmux pane.
+#
+# 'history -a' - writes new commands immediately to the history file
+# 'history -n' - reloads commands from the file (so other panes see them)
+PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 # Use fzf as helper in bash (https://github.com/junegunn/fzf?tab=readme-ov-file#key-bindings-for-command-line)
 # CTRL-R - Paste the selected command from history onto the command-line 
