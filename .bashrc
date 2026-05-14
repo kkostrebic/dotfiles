@@ -88,7 +88,7 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*|alacritty)
+xterm*|rxvt*|screen-256color|alacritty)
     # BASH prompt customization (https://bash-prompt-generator.org/)
     PS1='\[\e[92m\]\u@\h\[\e[0m\]:\[\e]0;\w\a\]\[\e[94m\]\W\[\e[91m\]$(__git_ps1 " (%s)")\[\e[0m\]\\$ '
     # PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
