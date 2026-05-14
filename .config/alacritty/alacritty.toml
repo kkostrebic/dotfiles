@@ -5,3 +5,6 @@ size = 9
 
 [colors.primary]
 background = "#000000"
+
+[selection]
+save_to_clipboard = true
