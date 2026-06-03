@@ -86,12 +86,23 @@ unset color_prompt force_color_prompt
 # Enable git branch status indicator
 export GIT_PS1_SHOWDIRTYSTATE=1
 
+_update_prompt_vars() {
+    if [ -n "$CONTAINER_ID" ]; then
+        # white over red background for easier distinction when inside container
+        PROMPT_ID_COLOR="41;97"
+        PROMPT_ID_VAL="$CONTAINER_ID"
+    else
+        PROMPT_ID_COLOR="92"
+        PROMPT_ID_VAL=$(hostname)
+    fi
+}
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*|screen-256color|alacritty)
+    _update_prompt_vars
     # BASH prompt customization (https://bash-prompt-generator.org/)
-    PS1='\[\e[92m\]\u@\h\[\e[0m\]:\[\e]0;\w\a\]\[\e[94m\]\W\[\e[91m\]$(__git_ps1 " (%s)")\[\e[0m\]\\$ '
-    # PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1='\[\e[92m\]\u@\[\e[${PROMPT_ID_COLOR}m\]${PROMPT_ID_VAL}\[\e[0m\]:\[\e]0;\w\a\]\[\e[94m\]\W\[\e[91m\]$(__git_ps1 " (%s)")\[\e[0m\]\\$ '
     ;;
 *)
     ;;
