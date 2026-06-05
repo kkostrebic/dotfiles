@@ -38,6 +38,7 @@ vim.o.softtabstop    = 2 -- Number of spaces that a <Tab> counts
 vim.o.tabstop        = 4 -- Number of columns regular tab will add
 vim.o.background     = 'dark' -- Help colorschemes determine which pallete to use
 vim.o.colorcolumn    = '80,120' -- Hightlight screen columns
+vim.o.exrc           = true -- Enables project-local configuration. Nvim will execute any .nvim.lua, .nvimrc, or .exrc file found in the current-directory and all parent directories (ordered upwards)
 
 -- How whitespace chars will be shown with `:set list` command
 vim.opt.listchars      = {
@@ -45,6 +46,13 @@ vim.opt.listchars      = {
   extends = '⮩',
   precedes = '⮨', 
 }
+
+vim.filetype.add({
+  pattern = {
+    ['.*%.[Dd]ockerfile'] = 'dockerfile',
+    ['.*%.[Cc]ontainerfile'] = 'dockerfile',
+  }
+})
 
 -- Sync clipboard between OS and Neovim. Schedule the setting after `UiEnter`
 -- because it can increase startup-time. Remove this option if you want your OS
@@ -347,7 +355,7 @@ require("lazy").setup({
   },
 
   -- automatically check for plugin updates
-  checker = { enabled = true }
+  checker = { enabled = true, notify = false }
 })
 
 -- Make the update feel faster (default is 4000ms, which is too slow)
@@ -371,7 +379,7 @@ vim.lsp.config('*', {
 
 -- Activate it
 -- vim.lsp.config('docker-language-server', {})
-vim.lsp.enable('docker_language_server')
+-- vim.lsp.enable('docker_language_server')
 
 -- ============================================================================
 -- Language Servers
@@ -410,11 +418,21 @@ vim.api.nvim_create_autocmd('LspAttach', {
       return { buffer = event.buf, desc = desc }
     end
 
-    -- Navigation (lists → fzf)
-    vim.keymap.set("n", "gd", fzf.lsp_definitions, opts("Go to definition"))
-    vim.keymap.set("n", "gr", fzf.lsp_references, opts("References"))
-    vim.keymap.set("n", "gi", fzf.lsp_implementations, opts("Implementations"))
-    vim.keymap.set("n", "gt", fzf.lsp_typedefs, opts("Type definitions"))
+    -- Global defaults (LSP keymaps - https://neovim.io/doc/user/lsp/#gra):
+    -- "gra" (Normal and Visual mode) is mapped to vim.lsp.buf.code_action()
+    -- "gri" is mapped to vim.lsp.buf.implementation()
+    -- "grn" is mapped to vim.lsp.buf.rename()
+    -- "grr" is mapped to vim.lsp.buf.references()
+    -- "grt" is mapped to vim.lsp.buf.type_definition()
+    -- "grx" is mapped to vim.lsp.codelens.run()
+    -- "gO" is mapped to vim.lsp.buf.document_symbol()
+    -- CTRL-S (Insert mode) is mapped to vim.lsp.buf.signature_help()
+    -- v_an and v_in fall back to LSP vim.lsp.buf.selection_range() if treesitter is not active.
+    -- gx handles textDocument/documentLink. Example: with gopls, invoking gx on "os" in this Go code will open documentation externally:
+    -- K is mapped to vim.lsp.buf.hover() unless 'keywordprg' is customized or a custom keymap for K exists.
+    -- 'omnifunc' is set to vim.lsp.omnifunc(), use i_CTRL-X_CTRL-O to trigger completion.
+    -- 'tagfunc' is set to vim.lsp.tagfunc(). This enables features like go-to-definition, :tjump, and keymaps like CTRL-], CTRL-W_], CTRL-W_} to utilize the language server.
+    -- 'formatexpr' is set to vim.lsp.formatexpr(), so you can format lines via gq if the language server supports it.
 
     -- Symbols
     vim.keymap.set("n", "<leader>ds", fzf.lsp_document_symbols, opts("Document symbols"))
@@ -422,16 +440,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Diagnostics
     vim.keymap.set("n", "<leader>ld", fzf.diagnostics_document, opts("Document diagnostics"))
-    vim.keymap.set("n", "<leader>lD", fzf.diagnostics_workspace, opts("Workspace diagnostics"))
-    vim.keymap.set("n", "gl", vim.diagnostic.open_float, opts("Line diagnostics"))
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts("Previous diagnostic"))
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts("Next diagnostic"))
+    vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts("Line diagnostics"))
 
     -- Code actions
     vim.keymap.set({ "n", "v" }, "<leader>ca", fzf.lsp_code_actions, opts("Code actions"))
-
-    -- Info
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts("Hover docs"))
   end,
 })
 
@@ -442,7 +454,6 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
 
 -- Adds a border to diagnostic popups (the "I" info)
 vim.diagnostic.config({
-  virtual_lines = true,  -- Use virtual lines for showing diagnostic messages
   float = { border = "rounded" },
 })
 
