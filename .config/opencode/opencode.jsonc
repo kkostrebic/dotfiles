@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "lsp": true,
+  "default_agent": "plan",
+  "model": "self_hosted/{env:LOCAL_AI_MODEL_NAME}",
+  "provider": {
+    "self_hosted": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local provider",
+      "options": {
+        "baseURL": "{env:LOCAL_AI_API_URL}/v1"
+      },
+      "models": {
+        "{env:AI_MODEL_NAME}": {
+          "name": "{env:LOCAL_AI_MODEL_NAME}"
+        }
+      }
+    }
+  },
+  "permission": "allow"
+}
