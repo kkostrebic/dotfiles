@@ -39,6 +39,7 @@ vim.o.tabstop        = 4 -- Number of columns regular tab will add
 vim.o.background     = 'dark' -- Help colorschemes determine which pallete to use
 vim.o.colorcolumn    = '80,120' -- Hightlight screen columns
 vim.o.exrc           = true -- Enables project-local configuration. Nvim will execute any .nvim.lua, .nvimrc, or .exrc file found in the current-directory and all parent directories (ordered upwards)
+vim.o.backupcopy     = 'yes' -- Make a copy of the file and overwrite the original one (preserving hardlinks, owners and file watchers)
 
 -- How whitespace chars will be shown with `:set list` command
 vim.opt.listchars      = {

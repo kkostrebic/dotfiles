@@ -9,27 +9,27 @@
 #umask 022
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
+if [[ -d "$HOME/bin" ]]; then
     PATH="$HOME/bin:$PATH"
 fi
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
+if [[ -d "$HOME/.local/bin" ]]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
+if [[ -n "$BASH_VERSION" ]]; then
     # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
+    if [[ -f "$HOME/.bashrc" ]]; then
+        source "$HOME/.bashrc"
     fi
 fi
 
 # Nice reads:
 #   - https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
 #   - https://askubuntu.com/questions/1411833/what-goes-in-profile-and-bashrc
-if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+if [[ -z "$DISPLAY" && "$XDG_VTNR" -eq 1 ]]; then
   # If only one window manager is installed (e.g. i3wm) and it's linked via
   # /usr/bin/x-window-manager there is no need to configure user specific
   # xinitrc. Add "exec i3" to ~/.xinit if you want to have explict call to
